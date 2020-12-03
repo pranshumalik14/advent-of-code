@@ -1,6 +1,8 @@
 using DelimitedFiles
 using DataStructures
 
+cd(@__DIR__)
+
 """
 Functions to find a subset of numbers that add up to 2020 (specifically pairs and triplet).
 Main idea exploted here is that becuase we have n unknowns and 1 equation/constraint, we will have n - 1 free 
@@ -51,8 +53,8 @@ function main()
     numbers = readdlm("input.txt", Int64)
 
     # run
-    println(find_adding_pair(numbers))
-    println(find_adding_triplet(numbers))
+    @show find_adding_pair(numbers)
+    @show find_adding_triplet(numbers)
 end
 
 # test day1
