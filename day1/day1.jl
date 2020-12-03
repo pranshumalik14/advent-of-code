@@ -47,6 +47,10 @@ end
 
 # run all functions
 function main()
+    # parse input
+    numbers = readdlm("input.txt", Int64)
+
+    # run
     println(find_adding_pair(numbers))
     println(find_adding_triplet(numbers))
 end
