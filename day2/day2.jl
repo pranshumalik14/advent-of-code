@@ -4,7 +4,7 @@ cd(@__DIR__)
 
 
 """
-//
+// count(i->(i=='f'), "foobar, bar, foo"); length(matchall(Regex(tsub[i]), ts[i]))
 """
 
 function main()
