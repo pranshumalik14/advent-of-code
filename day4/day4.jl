@@ -44,7 +44,7 @@ function check_fields_valid(passport::P, optional_fields::S)
         elseif field == "hgt"
             check = (v) -> (59u"inch" ≤ v ≤ 76u"inch")
         elseif field == "hcl"
-            check = (v) -> (length(v) == 7 && occursin(r"(?<=#)[a-f0-9]*$", v))
+            check = (v) -> (length(v) == 7 && occursin(r"#[a-f0-9]*$", v))
         elseif field == "ecl"
             eye_colors = Set{String}(["amb", "blu", "brn", "gry", "grn", "hzl", "oth"])
             check = (v) -> (v ∈ eye_colors)
