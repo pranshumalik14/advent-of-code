@@ -108,9 +108,7 @@ function main()
     psprt_strs = split(read("input.txt", String), "\n\n")
 
     # run
-    # @show num_valid_passports(psprt_strs, check_fields_contained; optional_fields=Set(["cid"]))
-    # @show num_valid_passports(psprt_strs, check_fields_contained)
-    # @show num_valid_passports(psprt_strs, check_fields_valid)
+    @show num_valid_passports(psprt_strs, check_fields_contained; optional_fields=Set(["cid"]))
     @show num_valid_passports(psprt_strs, check_fields_valid; optional_fields=Set(["cid"]))
 end
 
