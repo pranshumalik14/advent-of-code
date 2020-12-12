@@ -10,7 +10,8 @@ variables that can satisy the equation. The satisfying value of the fixed variab
 set by matching against the cartesian product of free variables (also input sets). Matching is done through hashtables.
 """
 
-function find_adding_pair(numbers::Array{Int64,2})::Tuple{Int64,Int64,Int64}
+# returns a pair addinig up to 2020 and their product
+function find_adding_pair(numbers::Vector{Int64})
     # declare hashtable for fast insert and lookup of numbers
     hashtable = Dict{Int64,Int64}()
 
@@ -26,7 +27,8 @@ function find_adding_pair(numbers::Array{Int64,2})::Tuple{Int64,Int64,Int64}
     error("Invalid input. No pairs adding to 2020 found!")
 end
 
-function find_adding_triplet(numbers::Array{Int64,2})::Tuple{Int64,Int64,Int64,Int64}
+# returns a triplet adding up to 2020 and their product
+function find_adding_triplet(numbers::Vector{Int64})
     # declare hashtable for lookup
     hashtable = Dict{Int64,Pair{Int64,Int64}}()
 
@@ -50,7 +52,7 @@ end
 # run all functions
 function main()
     # parse input
-    numbers = readdlm("input.txt", Int64)
+    numbers = readdlm("input.txt", '\n', Int64, '\n')[:]
 
     # run
     @show find_adding_pair(numbers)

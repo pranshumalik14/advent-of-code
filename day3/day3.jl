@@ -7,7 +7,8 @@ cd(@__DIR__)
 Map/2D array traversal on a special repeating map and a specific movement rule.
 """
 
-function count_trees(map::Array{String,1}, down::Int64, right::Int64)::Int64
+# returns number of trees encountered while traversing along the slope
+function count_trees(map::Vector{String}, down::Int64, right::Int64)
     # initialize count, map size (N × M), and starting position (x, y)
     tree_count = 0
     x = 1
@@ -16,7 +17,7 @@ function count_trees(map::Array{String,1}, down::Int64, right::Int64)::Int64
     N = length(map)     # rows
 
     # count trees
-    while x <= N
+    while x ≤ N
         # check
         if map[x][y] == '#'
             tree_count += 1
@@ -41,4 +42,5 @@ function main()
         count_trees(map, 1, 5) * count_trees(map, 1, 7) * count_trees(map, 2, 1)
 end
 
+# test day 3
 main()
