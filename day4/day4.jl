@@ -10,9 +10,8 @@ the respective criteria; a bunch of efficient string operations and ways to do t
 """
 
 # shorter type names
-const P = AbstractString
-const S = AbstractSet{<:AbstractString}
-# abstract type S <: Set{AbstractString} end
+P = AbstractString
+S = AbstractSet{<:AbstractString}
 
 # passport check criteria functions
 const check_fields = Set{String}(["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid"])
@@ -33,7 +32,6 @@ function check_fields_valid(passport::P, optional_fields::S)
     # parse fields into a {field, value} dict and declare
     field_dict = Dict{String,Any}()
     parse_field_values!(field_dict, passport, reqd_fields)
-    io = open("dbg.txt", "w")
 
     # enforce evaluation according to field
     fields_valid = map(collect(reqd_fields)) do field
@@ -46,26 +44,25 @@ function check_fields_valid(passport::P, optional_fields::S)
         elseif field == "hgt"
             check = (v) -> (150u"cm" ≤ v ≤ 76u"inch")
         elseif field == "hcl"
-            check = (v) -> (length(v) == 7 && v[1] == '#' && occursin(r"^[a-f0-9]*$", v[2:end]))
+            check = (v) -> (length(v) == 7 && occursin(r"(?<=#)[a-f0-9]*$", v))
         elseif field == "ecl"
             eye_colors = Set{String}(["amb", "blu", "brn", "gry", "grn", "hzl", "oth"])
             check = (v) -> (v ∈ eye_colors)
         elseif field == "pid"
-            check = (v) -> (length(v) == 9)
+            check = (v) -> (length(v) == 9 && typeof(uparse(v)) <: Int)
         elseif field == "cid"
             check = (v) -> (true) # no rule given: true by default
         else
             throw(error("Unhandled field value!"))
         end
 
-        if !haskey(field_dict, field) 
+        if !haskey(field_dict, field)
             return false
         else
-            println(io, "Checking $field with value $(field_dict[field]): $(check(field_dict[field]))")
             return check(field_dict[field])
         end
     end
-    println(io, "Passport is $(all(fields_valid) ? "" : "not") valid!\n####")
+
     return all(fields_valid)
 end
 
@@ -111,9 +108,9 @@ function main()
     psprt_strs = split(read("input.txt", String), "\n\n")
 
     # run
-    @show num_valid_passports(psprt_strs, check_fields_contained; optional_fields=Set(["cid"]))
-    @show num_valid_passports(psprt_strs, check_fields_contained)
-    @show num_valid_passports(psprt_strs, check_fields_valid)
+    # @show num_valid_passports(psprt_strs, check_fields_contained; optional_fields=Set(["cid"]))
+    # @show num_valid_passports(psprt_strs, check_fields_contained)
+    # @show num_valid_passports(psprt_strs, check_fields_valid)
     @show num_valid_passports(psprt_strs, check_fields_valid; optional_fields=Set(["cid"]))
 end
 
