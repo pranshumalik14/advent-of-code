@@ -1,4 +1,3 @@
-using DelimitedFiles
 using Unitful # version 1.0.0 and above
 
 cd(@__DIR__)

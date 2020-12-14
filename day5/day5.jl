@@ -15,7 +15,7 @@ function get_seat(boardpass::AbstractString)
 end
 
 # returns seat ID from seat
-function get_seat_id(seat::NamedTuple{(:row, :col),Tuple{Int64,Int64}})
+function get_seat_id(seat::NamedTuple{(:row, :col)})
     return seat.row * 8 + seat.col
 end
 
@@ -39,12 +39,12 @@ function get_my_seat_id(boardpasses::Vector{<:AbstractString})
         end
     end
 
-    throw(error("Your ID not found among the boarding passes!"))
+    throw(error("Your ID was not found among the boarding passes!"))
 end
 
 # run all parts
 function main()
-    # parse input into a map (array of Strings = 2D array of Char)
+    # parse input into a vector of strings (boardpasses)
     boardpasses = readlines("input.txt")
     
     # run
