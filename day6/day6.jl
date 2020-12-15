@@ -7,7 +7,8 @@ Set operations: union (∪) and intersect (∩).
 
 # returns number of unique entries in group
 @inline function num_unique(group_str::AbstractString)
-    return group_str |> Set |> length
+    # clump groups to one line before adding to set (removes the need for union)
+    return group_str |> x -> replace(x, "\n" => "") |> Set |> length
 end
 
 # returns number of entries in consensus in a group
@@ -17,8 +18,7 @@ end
 
 # returns sum of unique entries for all groups
 function sum_unique(group_strs::Vector{<:AbstractString})
-    # clump groups to one line before adding to set (removes the need for union)
-    return group_strs .|> x -> replace(x, "\n" => "") .|> num_unique |> sum
+    return group_strs .|> num_unique |> sum
 end
 
 # returns sum of consensus entries for all groups
