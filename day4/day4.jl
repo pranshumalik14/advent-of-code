@@ -35,22 +35,22 @@ function check_fields_valid(passport::P, optional_fields::S)
     # enforce evaluation according to field
     fields_valid = map(collect(reqd_fields)) do field
         if field == "byr"
-            check = (v) -> (1920 ≤ v ≤ 2002)
+            check = v -> 1920 ≤ v ≤ 2002
         elseif field == "iyr"
-            check = (v) -> (2010 ≤ v ≤ 2020)
+            check = v -> 2010 ≤ v ≤ 2020
         elseif field == "eyr"
-            check = (v) -> (2020 ≤ v ≤ 2030)
+            check = v -> 2020 ≤ v ≤ 2030
         elseif field == "hgt"
-            check = (v) -> (59u"inch" ≤ v ≤ 76u"inch")
+            check = v -> 59u"inch" ≤ v ≤ 76u"inch"
         elseif field == "hcl"
-            check = (v) -> (length(v) == 7 && occursin(r"#[a-f0-9]*$", v))
+            check = v -> match(r"#[a-f0-9]{6}$", v) ≠ nothing
         elseif field == "ecl"
             eye_colors = Set{String}(["amb", "blu", "brn", "gry", "grn", "hzl", "oth"])
-            check = (v) -> (v ∈ eye_colors)
+            check = v -> v ∈ eye_colors
         elseif field == "pid"
-            check = (v) -> (length(v) == 9 && typeof(uparse(v)) <: Int)
+            check = v -> length(v) == 9 && uparse(v) isa Int
         elseif field == "cid"
-            check = (v) -> (true) # no rule given: true by default
+            check = v -> true # no rule given: true by default
         else
             throw(error("Unhandled field value!"))
         end
