@@ -119,8 +119,15 @@ function main()
     # parse input into
     graph = read("input.txt", String) |> blob -> split(blob, "\n") |> parse_graph
 
+    # debug
+    io = open("dbg.txt", "w")
+    for (k, v) ∈ graph
+        println(io, "$k => $v")
+    end
+    close(io)
+
     # run
-    @show get_dependent_nodes(graph, "shiny gold")
+    # @show get_dependent_nodes(graph, "shiny gold")
 end
 
 # test day 7
