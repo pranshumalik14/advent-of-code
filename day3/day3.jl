@@ -33,10 +33,10 @@ end
 function main()
     # parse input into a map (array of Strings = 2D array of Char)
     map = readlines("input.txt")
-    
+
     # run
     @show count_trees(map, 1, 3)
-    @show count_trees(map, 1, 1) * count_trees(map, 1, 3) * 
+    @show count_trees(map, 1, 1) * count_trees(map, 1, 3) *
         count_trees(map, 1, 5) * count_trees(map, 1, 7) * count_trees(map, 2, 1)
 end
 

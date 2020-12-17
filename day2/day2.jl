@@ -65,7 +65,7 @@ function main()
     # parse input into an array of passwords
     pswd_strs = split.(readlines("input.txt"), " "; limit=3, keepempty=false)
     pswds = Password.(pswd_strs)
-    
+
     # run
     @show num_correct_pswds(pswds, check_pchar_repetition)
     @show num_correct_pswds(pswds, check_pchar_indices)

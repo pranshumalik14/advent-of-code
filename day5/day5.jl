@@ -46,7 +46,7 @@ end
 function main()
     # parse input into a vector of strings (boardpasses)
     boardpasses = readlines("input.txt")
-    
+
     # run
     @show highest_seat_id(boardpasses)
     @show get_my_seat_id(boardpasses)

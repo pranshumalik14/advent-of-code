@@ -4,7 +4,7 @@ cd(@__DIR__)
 
 """
 Functions to find a subset of numbers that add up to 2020 (specifically pairs and triplet).
-Main idea exploited here is that because we have n unknowns and 1 equation, we will have n - 1 free 
+Main idea exploited here is that because we have n unknowns and 1 equation, we will have n - 1 free
 variables that can satisy the equation. The satisfying value of the fixed variable is found in the input
 set by matching against the cartesian product of free variables (also input sets). Matching is done through hashtables.
 """

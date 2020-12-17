@@ -71,23 +71,23 @@ function parse_field_values!(field_dict::Dict{String,Any}, passport::P, required
     for field ∈ required_fields
         # find field; continue to next if not found
         find = findlast(field, passport)
-        if find === nothing 
+        if find === nothing
             continue
         end
 
         # get the value (match) till '\n' or ' ' after the field string
         val_index = find.stop + 1
         val = match(r"(?<=:)[#]*\w*", passport[val_index:end]).match
-            
+
         # parse values as types from string if necessary
         if field == "hgt"
             # parse unit check if unit was of type length
-            val = uparse(endswith(val, "in") ? val * "ch" : val) 
+            val = uparse(endswith(val, "in") ? val * "ch" : val)
             if !(typeof(val) <: Unitful.Length) continue end
         elseif field ∈ ["byr", "iyr", "eyr"]
             val = parse(Int64, val) # add as int
         end
-            
+
         field_dict[field] = val # add {key = field, value = val}
     end
 

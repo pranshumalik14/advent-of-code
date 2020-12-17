@@ -30,7 +30,7 @@ end
 function main()
     # parse input into array of group strings
     group_strs = read("input.txt", String) |> x -> split(x, "\n\n")
-    
+
     # run
     @show sum_unique(group_strs)
     @show sum_consensus(group_strs)
