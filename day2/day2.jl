@@ -32,7 +32,7 @@ function check_pchar_repetition(pswd::Password)
     # get policy char count in password
     p_char_count = count(i -> (i == pswd.policy_char), pswd.password)
 
-    # check against polict
+    # check against policy
     if pswd.lower_limit ≤ p_char_count ≤ pswd.upper_limit
         return true
     end
@@ -46,7 +46,7 @@ function check_pchar_indices(pswd::Password)
     p_char_arr = [pswd.password[pswd.lower_limit], pswd.password[pswd.upper_limit]]
     p_char_count = count(i -> (i == pswd.policy_char), p_char_arr)
 
-    # check against polict
+    # check against policy
     if p_char_count == 1
         return true
     end
