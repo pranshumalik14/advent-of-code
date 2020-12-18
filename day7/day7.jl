@@ -31,14 +31,14 @@ const NodeName = AbstractString
 const NodeNames = AbstractVector{<:NodeName}
 const NodeCoeffs = AbstractVector{<:Integer}
 const DepNodes = NamedTuple{(:dependents, :coeffs),Tuple{NodeNames,NodeCoeffs}}
-const AbstractGraph = IdDict{<:AbstractString,DepNodes}
-const Graph = IdDict{AbstractString,DepNodes}
+const AbstractGraph = Dict{<:AbstractString,DepNodes}
+const Graph = Dict{AbstractString,DepNodes}
 
 # do bfs while propagating capacity constraint on the number of dependee nodes
-let dep_nodes = Vector{NodeName}()
+let dep_nodes = Set{NodeName}()
     function constraint_prop_bfs(graph::AbstractGraph, node::NodeName, constraint::Integer)
         # base case
-        if node == ""
+        if !haskey(graph,node)
             return
         end
 
@@ -99,15 +99,13 @@ function parse_graph(rules::Vector{<:AbstractString})
         map(dependees_info) do dependee
             node, coeff = parse_dependee_bag(dependee)
 
-            # edit subgraph
             if haskey(graph, node)
-                dependents, coeffs = graph[node]
+                dependents, coeffs = graph[node] # edit subgraph
                 push!(dependents, dep_node)
                 push!(coeffs, coeff)
+            else
+                graph[node] = (dependents = [dep_node], coeffs = [coeff]) # insert subgraph
             end
-
-            # insert subgraph
-            graph[node] = (dependents = [dep_node], coeffs = [coeff])
         end
     end
 
@@ -117,17 +115,10 @@ end
 # run all parts
 function main()
     # parse input into
-    graph = read("input.txt", String) |> blob -> split(blob, "\n") |> parse_graph
-
-    # debug
-    io = open("dbg.txt", "w")
-    for (k, v) ∈ graph
-        println(io, "$k => $v")
-    end
-    close(io)
+    graph = read("input.txt", String) |> x -> split(x, "\n", keepempty=false) |> parse_graph
 
     # run
-    # @show get_dependent_nodes(graph, "shiny gold")
+    @show num_dependent_nodes(graph, "shiny gold")
 end
 
 # test day 7
