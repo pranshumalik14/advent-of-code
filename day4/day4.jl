@@ -48,7 +48,7 @@ function check_fields_valid(passport::P, optional_fields::S)
             eye_colors = Set{String}(["amb", "blu", "brn", "gry", "grn", "hzl", "oth"])
             check = v -> v ∈ eye_colors
         elseif field == "pid"
-            check = v -> length(v) == 9 && uparse(v) isa Int
+            check = v -> match(r"^\d{9}$", v) ≠ nothing
         elseif field == "cid"
             check = v -> true # no rule given: true by default
         else
