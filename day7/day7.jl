@@ -1,9 +1,11 @@
+using LightGraphs, SimpleWeightedGraphs, MetaGraphs
+
 cd(@__DIR__)
 
 
 """
-(Directed Acyclic) Graph parsing, generation, traversal, and manipulation. A
-special dependency graph (DAG) can be set up with constraints. starting with
+Graph parsing, generation, traversal, and manipulation. A special dependency graph
+(directed and acyclic) can be set up with constraints. starting with
 the "leaf" nodes and then
 mapping them to ... Simple BFS from the required node while checking
 constraints will do it.
@@ -22,23 +24,36 @@ referenced hashtable with entry x₁ -> ([yⱼ¹]₁ᵐ, [nⱼ¹]₁ᵐ) and all
 the vector [yⱼ¹]₁ᵐ are guaranteed to be keys into the same dictionary with
 their own entries, i.e. for every yᵢ¹ ∈ [yⱼ¹]₁ᵐ xₖᵢ === yᵢ¹ for some kᵢ. The
 terminating/leaf nodes have an entry of a tuple signifying empty list of
-dependees ([""], [0]). BFS in this case will end at leaf nodes or at the
+dependees ([""], [0]). DFS in this case will end at leaf nodes or at the
 required node.
 """
 
-# define dependent nodes type for graph
-const NodeName = AbstractString
-const NodeNames = AbstractVector{<:NodeName}
-const NodeCoeffs = AbstractVector{<:Integer}
-const DepNodes = NamedTuple{(:dependents, :coeffs),Tuple{NodeNames,NodeCoeffs}}
-const AbstractGraph = Dict{<:AbstractString,DepNodes}
-const Graph = Dict{AbstractString,DepNodes}
+# simple syntax for checking duplicity of vertex for safely adding a vertex in metagraph
+macro add_meta_vertex!(ex)
+    length(ex.args) == 3 # graph, symbol, value
+
+    # macro static(init)
+    #     var = gensym()
+    #     eval(current_module(), :(const $var = $init))
+    #     var = esc(var)
+    #     quote
+    #       global $var
+    #       $var
+    #     end
+    #   end
+
+    #   function foo()
+    #       J = @static zeros(5,5)
+    #   end
+end
 
 # do bfs while propagating capacity constraint on the number of dependee nodes
 let dep_nodes = Set{NodeName}()
+
+    # todo: create a generic dfs and weights multiplication loop that returns the product.
     function constraint_prop_bfs(graph::AbstractGraph, node::NodeName, constraint::Integer)
         # base case
-        if !haskey(graph,node)
+        if !haskey(graph, node)
             return
         end
 
@@ -53,7 +68,6 @@ let dep_nodes = Set{NodeName}()
         constraint::Integer)
         # recurse from dependee to find valid dependents
         constraint_prop_bfs(graph, node, constraint)
-        @show dep_nodes
         return dep_nodes
     end
 end # let block
@@ -65,8 +79,9 @@ end
 
 # returns a graph in the form of a dictionary after parsing all rules
 function parse_graph(rules::Vector{<:AbstractString})
-    # initialize empty graph
-    graph = Graph()
+    # initialize empty directed (meta) graph; indexable by name;
+    graph = MetaDiGraph{Int64,Int64}()
+    set_indexing_prop!(graph, :name)
 
     # function to parse contents by splitting; ready to be parsed as dependees
     parse_contents = rule ->
@@ -92,20 +107,15 @@ function parse_graph(rules::Vector{<:AbstractString})
     # parse rules and add all nodes with respective entries into the graph:
     # for all dependee nodes/bags, add dependent bag as entry with its coeff
     map(rules) do rule
-        dep_node = parse_dependent_bag(rule)
+        dep_node_name = parse_dependent_bag(rule)
+        src = 0
 
         dependees_info = rule |> parse_contents
 
         map(dependees_info) do dependee
-            node, coeff = parse_dependee_bag(dependee)
+            node_name, coeff = parse_dependee_bag(dependee)
+            @add_meta_vertex!(graph, :name, "test")
 
-            if haskey(graph, node)
-                dependents, coeffs = graph[node] # edit subgraph
-                push!(dependents, dep_node)
-                push!(coeffs, coeff)
-            else
-                graph[node] = (dependents = [dep_node], coeffs = [coeff]) # insert subgraph
-            end
         end
     end
 

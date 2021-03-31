@@ -30,8 +30,8 @@ function get_my_seat_id(boardpasses::Vector{<:AbstractString})
     seat_ids = Dict{Int64,Tuple{Int64,Int64}}()
     boardpasses .|> get_seat .|> get_seat_id .|> x -> seat_ids[x] = (x + 1, x - 1)
 
-    # iterate through vector while checking if my id is current id or helps find it
-    for (id, neighbors) ∈ seat_ids
+    # iterate through all seat ids to find the required ids
+    for (id, _) ∈ seat_ids
         if haskey(seat_ids, id + 2) && !haskey(seat_ids, id + 1)
             return  id + 1 # reqd id between neighbor ahead and current id
         elseif haskey(seat_ids, id - 2) && !haskey(seat_ids, id - 1)
