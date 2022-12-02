@@ -1,5 +1,3 @@
-using DelimitedFiles
-
 cd(@__DIR__)
 
 function parse_and_sum_cals(file::String)
