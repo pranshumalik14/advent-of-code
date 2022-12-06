@@ -22,7 +22,11 @@ function solve()
     ranges = parse_rangelists("input.txt")
 
     # part 1
-    @show ranges
+    numoverlaps = sum(@. first(ranges[:, 2]) <= first(ranges[:, 1]) &&
+                         last(ranges[:, 1]) <= last(ranges[:, 2])) +
+                  sum(@. first(ranges[:, 1]) <= first(ranges[:, 2]) &&
+                         last(ranges[:, 2]) <= last(ranges[:, 1]))
+    @show numoverlaps
 end
 
 # test day 4
