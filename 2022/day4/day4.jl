@@ -11,10 +11,7 @@ function parse_rangelists(file::String)
             [parse.(Int, x) |> Tuple for x ∈ _]
         end
     end
-    return @chain listmat begin
-        hcat(_...)
-        reshape(_, :, 2)
-    end
+    return hcat(listmat...) |> permutedims
 end
 
 function solve()
@@ -22,11 +19,18 @@ function solve()
     ranges = parse_rangelists("input.txt")
 
     # part 1
-    numoverlaps = sum(@. first(ranges[:, 2]) <= first(ranges[:, 1]) &&
-                         last(ranges[:, 1]) <= last(ranges[:, 2])) +
-                  sum(@. first(ranges[:, 1]) <= first(ranges[:, 2]) &&
-                         last(ranges[:, 2]) <= last(ranges[:, 1]))
-    @show numoverlaps
+    overlaps = @. ((first(ranges[:, 2]) <= first(ranges[:, 1])) &
+                   (last(ranges[:, 1]) <= last(ranges[:, 2]))) |
+                  ((first(ranges[:, 1]) <= first(ranges[:, 2])) &
+                   (last(ranges[:, 2]) <= last(ranges[:, 1])))
+    @show overlaps |> sum
+
+    # part 2
+    ranges = map(ranges) do rangeidx
+        return range(rangeidx...)
+    end
+    partialoverlaps = (ranges[:, 1] .∩ ranges[:, 2]) .|> collect .|> length .|> >(0)
+    @show partialoverlaps |> sum
 end
 
 # test day 4
